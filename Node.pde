@@ -28,6 +28,19 @@ class Node {
     pvy = vy;
     pvz = vz;
   }
+  void applyForces(Simulation s) {
+    vx *= airFriction;
+    vy *= airFriction;
+    vz *= airFriction;
+    y += vy;
+    x += vx;
+    z += vz;
+    float acc = dist(vx,vy,vz,pvx,pvy,pvz);
+    s.totalNodeNausea += acc*acc*nauseaUnit;
+    pvx = vx;
+    pvy = vy;
+    pvz = vz;
+  }
   void applyGravity() {
     vy += gravity;
   }

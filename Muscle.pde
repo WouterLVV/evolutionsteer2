@@ -36,6 +36,31 @@ class Muscle {
       previousTarget = target;
     }
   }
+  void applyForce(int i, ArrayList<Node> n, Simulation s) {
+    float target = previousTarget;
+    if(energyDirection == 1 || s.energy >= 0.0001){
+      target = len*toMuscleUsable(brainOutput);
+    }else{
+      target = len;
+    }
+    Node ni1 = n.get(c1);
+    Node ni2 = n.get(c2);
+    float distance = dist(ni1.x, ni1.y, ni1.z, ni2.x, ni2.y, ni2.z);
+    if(distance >= 0.0001){
+      float normX = (ni1.x-ni2.x)/distance;
+      float normY = (ni1.y-ni2.y)/distance;
+      float normZ = (ni1.z-ni2.z)/distance;
+      force = min(max(1-(distance/target), -1.7), 1.7);
+      ni1.vx += normX*force*rigidity/ni1.m;
+      ni1.vy += normY*force*rigidity/ni1.m;
+      ni1.vz += normZ*force*rigidity/ni1.m;
+      ni2.vx -= normX*force*rigidity/ni2.m;
+      ni2.vy -= normY*force*rigidity/ni2.m;
+      ni2.vz -= normZ*force*rigidity/ni2.m;
+      s.energy = max(s.energy+energyDirection*abs(previousTarget-target)*rigidity*energyUnit,0);
+      previousTarget = target;
+    }
+  }
   Muscle copyMuscle() {
     return new Muscle(c1, c2, len, rigidity);
   }

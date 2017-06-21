@@ -293,7 +293,7 @@ class Creature {
   void simulate(Simulation s) {
     brain.useBrain(this);
     for (int i = 0; i < m.size(); i++) {
-      m.get(i).applyForce(i, n);
+      m.get(i).applyForce(i, n, s);
     }
     for (int i = 0; i < n.size(); i++) {
       Node ni = n.get(i);

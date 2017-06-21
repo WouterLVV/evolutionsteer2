@@ -1,5 +1,5 @@
 final float windowSizeMultiplier = 1.4;
-final int SEED = 55; //7;  ;(
+final int SEED = 11213; //7;  ;(
 
 int threads = 4;
 
@@ -1100,6 +1100,9 @@ void draw() {
           e.printStackTrace();
         }
       }
+      //for (int i = 0; i < threads; i++) {
+      //  simulators[i].destroy();
+      //}
       //endnew
       
       setMenu(6);
