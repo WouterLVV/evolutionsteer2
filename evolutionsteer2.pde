@@ -1,5 +1,5 @@
 final float windowSizeMultiplier = 1.4;
-final int SEED = 11213; //7;  ;(
+final int SEED = 1123581113; //7;  ;(
 
 int threads = 4;
 
@@ -1086,9 +1086,9 @@ void draw() {
       
       //new
       Simulator[] simulators = new Simulator[threads];
-      int simulationsPerThread = 1000/threads;
+      float simulationsPerThread = 1000/threads;
       for (int i = 0; i < threads; i++) {
-        simulators[i] = new Simulator(i*simulationsPerThread,(i+1)*simulationsPerThread);
+        simulators[i] = new Simulator((int)(i*simulationsPerThread),(int)((i+1)*simulationsPerThread));
       }
       for (int i = 0; i < threads; i++) {
         simulators[i].start();

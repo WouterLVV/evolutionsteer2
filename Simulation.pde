@@ -39,45 +39,46 @@ class Simulation {
   float startingFoodDistance = 0;
   
   void setAverages() {
-    averageX = 0;
-    averageY = 0;
-    averageZ = 0;
-    for (int i = 0; i < currentCreature.n.size(); i++) {
-      Node ni = currentCreature.n.get(i);
-      averageX += ni.x;
-      averageY += ni.y;
-      averageZ += ni.z;
+    this.averageX = 0;
+    this.averageY = 0;
+    this.averageZ = 0;
+    for (int i = 0; i < this.currentCreature.n.size(); i++) {
+      Node ni = this.currentCreature.n.get(i);
+      this.averageX += ni.x;
+      this.averageY += ni.y;
+      this.averageZ += ni.z;
     }
-    averageX = averageX/currentCreature.n.size();
-    averageY = averageY/currentCreature.n.size();
-    averageZ = averageZ/currentCreature.n.size();
+    this.averageX = this.averageX/this.currentCreature.n.size();
+    this.averageY = this.averageY/this.currentCreature.n.size();
+    this.averageZ = this.averageZ/this.currentCreature.n.size();
   }
   
   void setFoodLocation(){
-    setAverages();
-    foodAngle += currentCreature.foodPositions[chomps][0];
-    float sinA = sin(foodAngle);
-    float cosA = cos(foodAngle);
+    this.setAverages();
+    foodAngle += this.currentCreature.foodPositions[chomps][0];
+    float sinA = sin(this.foodAngle);
+    float cosA = cos(this.foodAngle);
     float furthestNodeForward = 0;
-    for(int i = 0; i < currentCreature.n.size(); i++){
-      Node ni = currentCreature.n.get(i);
-      float newX = (ni.x-averageX)*cosA-(ni.z-averageZ)*sinA;
+    for(int i = 0; i < this.currentCreature.n.size(); i++){
+      Node ni = this.currentCreature.n.get(i);
+      float newX = (ni.x-this.averageX)*cosA-(ni.z-this.averageZ)*sinA;
       if(newX >= furthestNodeForward){
         furthestNodeForward = newX;
       }
     }
-    float d = MIN_FOOD_DISTANCE+(MAX_FOOD_DISTANCE-MIN_FOOD_DISTANCE)*currentCreature.foodPositions[chomps][2];
-    foodX = foodX+cos(foodAngle)*(furthestNodeForward+d);
-    foodZ = foodZ+sin(foodAngle)*(furthestNodeForward+d);
-    foodY = currentCreature.foodPositions[chomps][1];
-    startingFoodDistance = getCurrentFoodDistance();
+    float d = MIN_FOOD_DISTANCE+(MAX_FOOD_DISTANCE-MIN_FOOD_DISTANCE)*this.currentCreature.foodPositions[this.chomps][2];
+    
+    this.foodX = this.foodX+cos(foodAngle)*(furthestNodeForward+d);
+    this.foodZ = this.foodZ+sin(foodAngle)*(furthestNodeForward+d);
+    this.foodY = this.currentCreature.foodPositions[chomps][1];
+    this.startingFoodDistance = this.getCurrentFoodDistance();
   }
 
   float getCurrentFoodDistance(){
     float closestDist = 9999;
     for(int i = 0; i < currentCreature.n.size(); i++){
-      Node n = currentCreature.n.get(i);
-      float distFromFood = dist(n.x,n.y,n.z,foodX,foodY,foodZ)-0.4;
+      Node n = this.currentCreature.n.get(i);
+      float distFromFood = dist(n.x,n.y,n.z,this.foodX,this.foodY,this.foodZ)-0.4;
       if(distFromFood < closestDist){
         closestDist = distFromFood;
       }
@@ -87,34 +88,38 @@ class Simulation {
   
   float getFitness(){
     Boolean hasNodeOffGround = false;
-    for(int i = 0; i < currentCreature.n.size(); i++){
-      if(currentCreature.n.get(i).y <= -0.2001){
+    for(int i = 0; i < this.currentCreature.n.size(); i++){
+      if(this.currentCreature.n.get(i).y <= -0.2001){
         hasNodeOffGround = true;
         break;
       }
     }
     if(hasNodeOffGround){
       float withinChomp = max(1.0-getCurrentFoodDistance()/startingFoodDistance,0);
-      return chomps+withinChomp;//cumulativeAngularVelocity/(n.size()-2)/pow(averageNodeNausea,0.3);//   /(2*PI)/(n.size()-2); //dist(0,0,averageX,averageZ)*0.2; // Multiply by 0.2 because a meter is 5 units for some weird reason.
+      return this.chomps+withinChomp;//cumulativeAngularVelocity/(n.size()-2)/pow(averageNodeNausea,0.3);//   /(2*PI)/(n.size()-2); //dist(0,0,averageX,averageZ)*0.2; // Multiply by 0.2 because a meter is 5 units for some weird reason.
     }else{
       return 0;
     }
   }
   
   public Simulation(int cn) {
-    currentCreature = c[cn].copyCreature(-1,false,true);
-    creatureNumber = cn;
+    this.currentCreature = c[cn].copyCreature(-1,false,true);
+    this.creatureNumber = cn;
   }
   
   public void run() {
-    setFoodLocation();
+    this.setFoodLocation();
     for (int i = 0; i < maxIterations; i++) {
-      currentCreature.simulate(this);
-      averageNodeNausea = totalNodeNausea/currentCreature.n.size();
-      simulationTimer++;
-      timer++;
+      this.currentCreature.simulate(this);
+      this.averageNodeNausea = this.totalNodeNausea/currentCreature.n.size();
+      this.simulationTimer++;
+      this.timer++;
     }
     this.setAverages();
+    //if (c[creatureNumber].d != this.getFitness()) {
+    //  System.out.print(creatureNumber + ": " + (c[creatureNumber].d - this.getFitness()) + " ;- ");
+    //  flush();
+    //}
     c[creatureNumber].d = this.getFitness();
   }
 }

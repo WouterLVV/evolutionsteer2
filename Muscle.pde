@@ -50,7 +50,7 @@ class Muscle {
       float normX = (ni1.x-ni2.x)/distance;
       float normY = (ni1.y-ni2.y)/distance;
       float normZ = (ni1.z-ni2.z)/distance;
-      force = min(max(1-(distance/target), -1.7), 1.7);
+      float force = min(max(1-(distance/target), -1.7), 1.7);
       ni1.vx += normX*force*rigidity/ni1.m;
       ni1.vy += normY*force*rigidity/ni1.m;
       ni1.vz += normZ*force*rigidity/ni1.m;

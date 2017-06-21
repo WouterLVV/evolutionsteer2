@@ -291,14 +291,14 @@ class Creature {
   
   //new
   void simulate(Simulation s) {
-    brain.useBrain(this);
+    brain.useBrain(this, s);
     for (int i = 0; i < m.size(); i++) {
       m.get(i).applyForce(i, n, s);
     }
     for (int i = 0; i < n.size(); i++) {
       Node ni = n.get(i);
       ni.applyGravity();
-      ni.applyForces();
+      ni.applyForces(s);
       ni.hitWalls((i >= 2));
       float distFromFood = dist(ni.x,ni.y,ni.z,s.foodX,s.foodY,s.foodZ);
       if(distFromFood <= 0.4){

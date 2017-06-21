@@ -113,6 +113,36 @@ class Brain {
       m.get(i).brainOutput = neurons[BRAIN_WIDTH-1][n.size()+i];
     }
   }
+  public void useBrain(Creature owner, Simulation s){
+    ArrayList<Node> n = owner.n;
+    ArrayList<Muscle> m = owner.m;
+    for(int i = 0; i < n.size(); i++){
+      Node ni = n.get(i);
+      neurons[0][i] = dist(ni.x, ni.y, ni.z, s.foodX, s.foodY, s.foodZ);
+    }
+    for(int i = 0; i < m.size(); i++){
+      Muscle am = m.get(i);
+      Node ni1 = n.get(am.c1);
+      Node ni2 = n.get(am.c2);
+      neurons[0][n.size()+i] = dist(ni1.x, ni1.y, ni1.z, ni2.x, ni2.y, ni2.z)/am.len;
+    }
+    for(int x = 1; x < BRAIN_WIDTH; x++){
+      for(int y = 0; y < BRAIN_HEIGHT-1; y++){
+        float total = 0;
+        for(int input = 0; input < BRAIN_HEIGHT; input++){
+          total += neurons[x-1][input]*axons[x-1][input][y].weight;
+        }
+        if(x == BRAIN_WIDTH-1){
+          neurons[x][y] = total;
+        }else{
+          neurons[x][y] = sigmoid(total);
+        }
+      }
+    }
+    for(int i = 0; i < m.size(); i++){
+      m.get(i).brainOutput = neurons[BRAIN_WIDTH-1][n.size()+i];
+    }
+  }
   public float sigmoid(float input){
     return 1.0/(1.0+pow(2.71828182846,-input));
   }
